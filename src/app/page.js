@@ -2,7 +2,6 @@
 import React from "react";
 import WeatherDisplay from "@/components/WeatherDisplay";
 import WeatherForm from "@/components/WeatherForm";
-import weatherApiData from "@/lib/apidata";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -19,9 +18,19 @@ export default function Home() {
     if (city.length < 1) {
       setError("Please enter a city name");
     } else {
-      const weatherdataRes = await weatherApiData(city);
-      setWeatherData([weatherdataRes]);
-      // console.log(weatherdataRes.current);
+      if (city.length > 0) {
+        const res = await fetch("/api/weather/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ city: city }),
+        });
+
+        const weatherdataRes = await res.json();
+        setWeatherData([weatherdataRes.data]);
+        // console.log(weatherdataRes.current);
+      }
     }
   };
 
